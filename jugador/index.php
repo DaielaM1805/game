@@ -28,31 +28,41 @@
     </div>
 
     <script>
+    document.getElementById("iniciarPartida").addEventListener("click", function() {
+        fetch("../include/crear_sala.php")
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("¡Te uniste a la sala #" + data.id_sala + "!");
+                // Redirigir a la sala o actualizar la interfaz
+            } else {
+                alert("Error: " + data.error);
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+    </script>
+
+
+    <script>
     document.addEventListener("DOMContentLoaded", () => {
         fetch("../include/infojugador.php")
-            .then(response => response.text()) // <-- Cambio a .text() para ver el contenido
-            .then(data => {
-                console.log("Respuesta del servidor:", data); // <-- Verifica qué devuelve el servidor
+            .then(response => response.text())
+            .then(text => {
+                console.log("Respuesta del servidor:", text);
                 try {
-                    const jsonData = JSON.parse(data); // Intentamos convertirlo en JSON
+                    const jsonData = JSON.parse(text);
+                    if (jsonData.error) {
+                        console.error("Error en la respuesta:", jsonData.error);
+                        return;
+                    }
+
                     document.getElementById("username").textContent = jsonData.username;
-                    document.getElementById("nivel").textContent = jsonData.nivel;
                     document.getElementById("puntos").textContent = jsonData.puntos;
-                    document.getElementById("avatar").src = "../img/avatares/" + jsonData.avatar;
+                    document.getElementById("avatar").src = `../img/avatares/${jsonData.avatar}`;
+
                 } catch (error) {
                     console.error("Error al parsear JSON:", error);
-                }
-            });
-    });
-
-    document.getElementById("iniciarPartida").addEventListener("click", () => {
-        fetch("../include/buscar_sala.php")
-            .then(response => response.json())
-            .then(data => {
-                if (data.sala) {
-                    window.location.href = "../partidas/sala.php?id=" + data.sala;
-                } else {
-                    alert("No se pudo encontrar o crear una sala.");
                 }
             });
     });
