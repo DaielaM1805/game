@@ -1,0 +1,82 @@
+body {
+    background-image: url(../img/fondo_admin.png);
+    background-size: cover;
+    height: 100vh; 
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Estilos del título */
+h1 {
+    color: rgb(207, 9, 9);
+    text-align: center;
+    margin-top: 50px;
+    width: 100%;
+}
+
+/* Contenedor del menú pegado a la izquierda */
+.menu_opcion {
+    position: absolute;
+    top: 50%;
+    left: 20px; /* Lo pega a la izquierda */
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Opciones del menú */
+.menu {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinea los elementos a la izquierda */
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+}
+
+.menu li {
+    margin: 10px 0;
+}
+
+/* Estilos de los enlaces */
+.menu a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 10px 15px;
+    background: rgba(128, 128, 128, 0.6);
+    border-radius: 5px;
+    display: block;
+    text-align: left;
+    transition: 0.3s;
+}
+
+.menu a:hover {
+    background: rgba(43, 219, 20, 0.7);
+    /* al pasar el cursor por encima */
+}
+
+/* Estilos del enlace de cerrar sesión */
+.cerrar-sesion {
+    margin-top: 10px;
+    text-align: left;
+}
+
+.cerrar-sesion a {
+    color: white;
+    font-size: 18px;
+    text-decoration: none;
+    padding: 10px 15px;
+     background: red; /*boton de cerrar sesion */
+    border-radius: 5px;
+    display: block;
+    text-align: left;
+    transition: 0.3s;
+}
+
+.cerrar-sesion a:hover {
+    background: rgb(15, 184, 175);
+    /* al poner el cursor por encima */
+}
