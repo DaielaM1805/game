@@ -15,7 +15,7 @@ require 'config/database.php';
 <body>
     <div class="container mt-5">
         <h2 class="text-center">Iniciar Sesión</h2>
-        <form id="loginForm" method="POST" action="include/pocesarlogin.php">
+        <form id="loginForm" method="POST" action="include/procesarlogin.php">
             <div class="mb-3">
                 <label class="form-label">Usuario</label>
                 <input type="text" name="usuario" id="usuario" class="form-control" required>

@@ -26,10 +26,6 @@ class Database
         echo 'Error de Conexion: ' . $e->getMessage();
         exit;
     }
-
-    
     }
 }
-
-
 ?>
