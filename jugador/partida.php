@@ -99,12 +99,10 @@ try {
         }
         .player-avatar {
             width: 80px;
-            height: 80px;
-            border-radius: 50%;
+            height: 135px;
+            border-radius: 1%;
             object-fit: cover;
             margin-right: 1rem;
-            border: 3px solid #0d6efd;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
         }
         .player-card.selected .player-avatar {
@@ -202,7 +200,13 @@ try {
 <body>
     <div class="container">
         <div class="game-container">
-            <h1 class="text-center mb-4">Partida en Curso - <?php echo htmlspecialchars($mundo['nombre']); ?></h1>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Partida en Curso - <?php echo htmlspecialchars($mundo['nombre']); ?></h1>
+                <div id="timer" class="h3 text-warning">
+                    <i class="fas fa-clock me-2"></i>
+                    <span>05:00</span>
+                </div>
+            </div>
             
             <div class="row">
                 <?php foreach ($jugadores as $jugador): ?>
@@ -313,11 +317,40 @@ try {
             });
         });
 
-        // Actualizar estado del juego cada 3 segundos
+        // Agregar el temporizador de 5 minutos
+        let timeLeft = 300; // 5 minutos en segundos
+        const timerElement = document.querySelector('#timer span');
+        
+        const timer = setInterval(() => {
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                finalizarPartida('timeout');
+            }
+        }, 1000);
+
+        function finalizarPartida(motivo) {
+            $.post('../include/finalizar_partida.php', {
+                motivo: motivo
+            })
+            .done(function(response) {
+                if (response.success) {
+                    window.location.href = 'resultado.php';
+                }
+            });
+        }
+
+        // Modificar la función actualizarEstadoJuego para verificar jugadores muertos
         function actualizarEstadoJuego() {
             $.get('../include/get_estado_partida.php')
             .done(function(response) {
                 if (response.success) {
+                    let jugadorMuerto = false;
+                    
                     response.jugadores.forEach(function(jugador) {
                         const playerCard = $(`.player-card[data-jugador-id="${jugador.id_jugador}"]`);
                         const healthBar = playerCard.find('.health-bar-fill');
@@ -326,27 +359,20 @@ try {
                         healthBar.css('width', jugador.vida + '%');
                         healthText.text('Vida: ' + jugador.vida + '/100');
                         
-                        // Actualizar clase critical en la barra de vida
+                        if (jugador.vida <= 0) {
+                            jugadorMuerto = true;
+                        }
+                        
                         if (jugador.vida <= 20) {
                             healthBar.addClass('critical');
                         } else {
                             healthBar.removeClass('critical');
                         }
-                        
-                        if (jugador.estado === 'muerto') {
-                            playerCard.addClass('dead');
-                            if (jugador.id_jugador === selectedPlayer) {
-                                selectedPlayer = null;
-                                $('#btnAtacar').prop('disabled', true);
-                                $('#selectedPlayerName').text('');
-                                playerCard.removeClass('selected');
-                            }
-                        }
                     });
 
-                    // Verificar fin del juego
-                    if (response.partida_terminada) {
-                        window.location.href = 'resultado.php';
+                    // Si hay un jugador muerto, finalizar la partida
+                    if (jugadorMuerto) {
+                        finalizarPartida('muerte');
                     }
                 }
             });

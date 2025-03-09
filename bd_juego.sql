@@ -216,7 +216,9 @@ INSERT INTO `nivel` (`id_nivel`, `nom_nivel`, `puntos_minimos`, `img_nivel`) VAL
 CREATE TABLE `partidas` (
   `id_partida` int(11) NOT NULL,
   `id_sala` int(11) NOT NULL,
-  `id_estado` int(11) NOT NULL DEFAULT 3
+  `id_estado` int(11) NOT NULL DEFAULT 3,
+  `fecha_creacion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `id_ganador` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --

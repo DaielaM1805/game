@@ -222,7 +222,7 @@ if (!isset($_SESSION['id_usuario'])) {
                     return;
                 }
 
-                mostrarCargando('Enviando datos...');
+                mostrarCargando('Buscando sala...');
 
                 const params = new URLSearchParams();
                 params.append('id_mundo', select_mundo);
@@ -240,16 +240,18 @@ if (!isset($_SESSION['id_usuario'])) {
                 console.log('Respuesta:', data);
 
                 if (data.success) {
-                    mostrarCargando('Redirigiendo a sala...');
+                    mostrarCargando('Entrando a la sala...');
                     setTimeout(() => {
-                        window.location.href = data.redirect_url || 'sala.php';
+                        console.log('Redirigiendo a:', data.redirect_url);
+                        window.location.href = data.redirect_url;
                     }, 1000);
                 } else {
                     ocultarCargando();
                     mostrarError(data.mensaje || 'Error al buscar sala');
+                    console.error('Error detallado:', data.error);
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error en la petición:', error);
                 ocultarCargando();
                 mostrarError('Error al conectar con el servidor');
             }
@@ -324,7 +326,7 @@ if (!isset($_SESSION['id_usuario'])) {
                     `;
                     container.appendChild(div);
                 });
-            });
+        });
     </script>
 </body>
 </html>

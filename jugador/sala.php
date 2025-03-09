@@ -2,14 +2,10 @@
 session_start();
 require_once '../config/database.php';
 
-// Verificar autenticación
-if (!isset($_SESSION['id_usuario'])) {
-    header('Location: ../index.php');
-    exit();
-}
+error_log("Iniciando sala.php - Verificando sesión");
 
-// Verificar si hay una sala asignada
-if (!isset($_SESSION['id_sala'])) {
+if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['id_sala'])) {
+    error_log("Usuario o sala no definidos en sesión");
     header('Location: seleccion.php');
     exit();
 }
@@ -18,39 +14,51 @@ try {
     $db = new Database();
     $conn = $db->conectar();
     
-    // Verificar si hay una partida activa para esta sala
-    $query = "SELECT p.id_partida 
-             FROM partidas p 
-             WHERE p.id_sala = :id_sala 
-             AND p.id_estado = 5";
-             
-    $stmt = $conn->prepare($query);
-    $stmt->bindParam(":id_sala", $_SESSION['id_sala']);
-    $stmt->execute();
-    $partida = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($partida) {
-        $_SESSION['id_partida'] = $partida['id_partida'];
-        header('Location: partida.php');
-        exit();
-    }
-    
     // Obtener información de la sala y el mundo
-    $query = "SELECT m.nom_mundo, m.img_mundo 
-             FROM sala s 
-             JOIN mundos m ON s.id_mundo = m.id_mundo 
-             WHERE s.id_sala = :id_sala";
-    
-    $stmt = $conn->prepare($query);
-    $stmt->bindParam(":id_sala", $_SESSION['id_sala']);
+    $stmt = $conn->prepare("
+        SELECT m.nom_mundo, m.img_mundo 
+        FROM sala s 
+        INNER JOIN mundos m ON s.id_mundo = m.id_mundo 
+        WHERE s.id_sala = :id_sala
+    ");
+    $stmt->bindParam(':id_sala', $_SESSION['id_sala']);
     $stmt->execute();
     $mundo = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$mundo) {
+        error_log("No se encontró información del mundo para la sala");
         header('Location: seleccion.php');
         exit();
     }
+
+    error_log("Datos del mundo obtenidos: " . print_r($mundo, true));
+    
+    // Verificar que el jugador está en la sala
+    $stmt = $conn->prepare("
+        SELECT COUNT(*) as esta_en_sala 
+        FROM sala_jugadores 
+        WHERE id_sala = :id_sala AND id_jugador = :id_jugador
+    ");
+    $stmt->bindParam(':id_sala', $_SESSION['id_sala']);
+    $stmt->bindParam(':id_jugador', $_SESSION['id_usuario']);
+    $stmt->execute();
+    $verificacion = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($verificacion['esta_en_sala'] == 0) {
+        error_log("Jugador no está en la sala");
+        header('Location: seleccion.php');
+        exit();
+    }
+
+    error_log("Sala verificada correctamente. ID: " . $_SESSION['id_sala']);
+
+} catch (Exception $e) {
+    error_log("Error en sala.php: " . $e->getMessage());
+    header('Location: seleccion.php');
+    exit();
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -156,6 +164,16 @@ try {
         let countdownStarted = false;
         let redirecting = false;
         let actualizadorJugadores;
+
+        // Agregar evento para cuando el usuario cierra la ventana o navega fuera
+        window.addEventListener('beforeunload', function(e) {
+            if (!redirecting) {
+                // Enviar petición síncrona para limpiar la sala
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', '../include/abandonar_sala.php', false);
+                xhr.send();
+            }
+        });
 
         function actualizarJugadores() {
             if (redirecting) {
@@ -264,11 +282,3 @@ try {
     </script>
 </body>
 </html>
-<?php
-} catch (Exception $e) {
-    error_log("Error en sala.php: " . $e->getMessage());
-    error_log("Stack trace: " . $e->getTraceAsString());
-    header('Location: seleccion.php');
-    exit();
-}
-?>
