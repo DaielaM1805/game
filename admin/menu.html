@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Admin</title>
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- <link href="../css/admin.css" rel="stylesheet"> -->
+    
+    <style>
+        body {
+            background-image: url(../img/fondo_admin.png);
+            background-size: cover;
+            height: 100vh; 
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Estilos del título */
+        h1 {
+            color: rgb(223, 214, 214);
+            text-align: center;
+            margin-top: 50px;
+            width: 100%;
+        }
+        
+        /* Contenedor del menú pegado a la izquierda */
+        .menu_opcion {
+            position: absolute;
+            top: 50%;
+            left: 20px; /* Lo pega a la izquierda */
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Opciones del menú */
+        .menu {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Alinea los elementos a la izquierda */
+            justify-content: center;    
+            list-style: none;
+            padding: 0;
+        }
+
+        .menu li, .cerrar-sesion li {
+            margin: 10px 0;
+        }
+
+        .menu li a, .cerrar-sesion li a {
+            text-decoration: none;
+            color: rgb(255, 255, 255);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+
+        .menu li a i, .cerrar-sesion li a i {
+            margin-right: 10px;
+        }
+
+        .cerrar-sesion {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="menu_opcion">
+            <!-- Opciones del menú -->
+            <ul class="menu">
+                <li><a href="index.php"><i class="fas fa-house"></i> Inicio</a></li>
+                <li><a href="crear_usu.php"><i class="fa-solid fa-user-plus"></i> Crear usuario</a></li>
+                <li><a href="admin.php"><i class="fa-solid fa-users"></i> Lista de usuarios</a></li>
+                <li><a href="estadisticas_usu.php"><i class="fa-solid fa-chart-bar"></i> Estadísticas</a></li>
+            </ul>
+
+            <!-- Cerrar sesión -->
+            <!-- <ul class="cerrar-sesion">
+                <li><a href="../include/salir.php"><i class="fa-solid fa-door-closed"></i> Cerrar sesión</a></li>
+            </ul> -->
+            <button id="logoutBtn" class="logout-btn">Cerrar Sesión</button>
+
+<style>
+  .logout-btn {
+    background-color: #ff4b5c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+  .logout-btn:hover {
+    background-color: #ff1c38;
+  }
+</style>
+
+<script>
+  document.getElementById("logoutBtn").addEventListener("click", function() {
+    if (confirm("¿Seguro que quieres cerrar sesión?")) {
+      window.location.href = "../logout.php"; // Redirige a PHP para romper la sesión
+    }
+  });
+</script>
+
+        </nav>
+    </header>
+</body>
+</html>
