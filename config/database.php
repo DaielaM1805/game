@@ -3,9 +3,9 @@ class Database
 {
    
     private $hostname = "localhost";
-    private $database = "bd_juego";
-    private $username = "root";
-    private $password = "";
+    private $database = "u716029766_free_daniela";
+    private $username = "u716029766_daniela";
+    private $password = "Daniel@2025!";
     private $chasrset = "utf8";
 
     function conectar()
