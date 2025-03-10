@@ -127,6 +127,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+
+            <div class="text-center mt-3">
+                <a href="login.php">Iniciar sesión</a>
+            </div>
+            <div class="position-absolute top-0 start-0 mt-3 ms-3">
+    <a href="index.php" class="btn btn-primary">Volver</a>
+</div>
+
+
+
         </form>
         <div id="mensaje" class="mt-3 text-center"></div>
     </div>

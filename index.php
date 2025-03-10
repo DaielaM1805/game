@@ -33,6 +33,16 @@ require 'config/database.php'; // Archivo con la conexión a la base de datos
     </style>
 </head>
 <body>
+
+    <!-- 🔹 Mensajes de alerta -->
+    <?php
+    if (isset($_GET['sesion']) && $_GET['sesion'] == "cerrada") {
+        echo "<script>alert('Sesión cerrada correctamente.');</script>";
+    } elseif (isset($_GET['error']) && $_GET['error'] == "sin_sesion") {
+        echo "<script>alert('Debes iniciar sesión para acceder.');</script>";
+    }
+    ?>
+
     <div class="container text-center mt-5">
         <h1>Bienvenido a kumite Game</h1>
         <p>Sumérgete en una batalla épica. Inicia sesión o regístrate para jugar.</p>

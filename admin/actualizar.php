@@ -8,7 +8,7 @@ $con = $conex->conectar();
 
 // 🔍 Verificar si hay sesión iniciada
 if (!isset($fila['user_name']) || empty($fila['user_name'])) {
-    die('<script>alert("No se proporcionó un usuario válido."); window.location="admin.php";</script>');
+    die('<script>alert("No se proporcionó un usuario válido."); window.location="../index.php";</script>');
 }
 
 if (!isset($_SESSION['id_rol'])) {

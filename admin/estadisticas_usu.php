@@ -3,9 +3,6 @@ session_start();
 require_once('../config/database.php');
 $conexion = new database();
 $con = $conexion->conectar();
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -14,147 +11,70 @@ $con = $conexion->conectar();
     <meta charset="UTF-8">
     <title>ADMINISTRADOR - Estadísticas</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!-- <link rel="stylesheet" href="estilo.css"> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const menu = document.querySelector(".menu_lateral");
-    const menuBtn = document.createElement("button");
-    menuBtn.textContent = "☰";
-    menuBtn.classList.add("menu-btn");
-    document.body.appendChild(menuBtn);
-    menuBtn.addEventListener("click", function() {
-        menu.classList.toggle("mostrar");
-    });
-});
-</script>
-
-<body>
-    <div class="menu_lateral">
-        <?php
-        $sql = $con->prepare("SELECT user_name, id_usuario FROM usuario LIMIT 1");
-        $sql->execute();
-        $fila = $sql->fetch(PDO::FETCH_ASSOC);
-        ?>
-
-        <?php if ($fila): ?>
-            <h1><?php echo htmlspecialchars($_SESSION['user_name']); ?></h1>
-            <p><?php echo htmlspecialchars($_SESSION['id_usuario']); ?></p>
-        <?php else: ?>
-            <h1>Usuario no encontrado</h1>
-        <?php endif; ?>
-
-        <div class="menu">
-            <a href="index.php">index administrador</a>
-            <!-- <a href="partidas.php">Partidas</a> -->
-            <!-- <a href="estadisticas_usu.php">Estadísticas de jugadores</a> -->
-            <a href="../index.php" class="cerrar-sesion">Cerrar sesión</a>
-        </div>
-    </div>
-    <div class="wrapper">
-        <div id="menu-wrapper">
-            <!-- <nav>
-                <a href="" id="logo">
-                    <img src="../img/logo.png" alt="Logo" class="logo" />
-                </nav>
-            </a> -->
+<body class="bg-dark text-white">
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>📊 Estadísticas Generales</h2>
+            <a href="index.php" class="btn btn-primary">Volver</a>
         </div>
 
-        <h2>📊 Estadísticas Generales</h2>
-        <div class="estadisticas">
+        <div class="table-responsive mt-4">
+            <table class="table table-dark table-striped text-center">
+                <thead>
+                    <tr>
+                        <th>👥 Usuario</th>
+                        <th>🛡️ Tipo de Usuario</th>
+                        <th>🔹 Estado</th>
+                        <th>📅 Última Actividad</th>
+                        <th>📈 Nivel Actual</th>
+                        <th>🌎 Mundo Actual</th>
+                        <th>🎮 Partidas Jugadas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    // Obtener datos de los jugadores con su tipo de usuario, nivel y partidas jugadas
+                    $sql = $con->prepare("
+                        SELECT 
+                            u.user_name, 
+                            r.nom_rol AS tipo_usuario,
+                            CASE 
+                                WHEN u.id_estado = 1 AND u.ultima_sesion >= NOW() - INTERVAL 10 DAY 
+                                    THEN 'Activo' 
+                                ELSE 'Inactivo (+10 días)' 
+                            END AS estado,
+                            u.ultima_sesion AS ultima_actividad,
+                            COALESCE(MAX(d_n.id_nivel), 'Sin Nivel') AS nivel_actual,
+                            COALESCE(MAX(m.nom_mundo), 'Sin Mundo') AS mundo_actual,
+                            COUNT(s.id_sala) AS partidas_jugadas
+                        FROM usuario u
+                        LEFT JOIN rol r ON u.id_rol = r.id_rol
+                        LEFT JOIN deta_niv d_n ON u.id_usuario = d_n.id_usuario
+                        LEFT JOIN sala s ON d_n.id_nivel = s.id_nivel
+                        LEFT JOIN mundos m ON s.id_mundo = m.id_mundo
+                        GROUP BY u.id_usuario
+                    ");
+                    $sql->execute();
+                    $usuarios = $sql->fetchAll(PDO::FETCH_ASSOC);
 
-            <?php
-            // Total de jugadores
-            $sql = $con->prepare("SELECT COUNT(*) as total_usuarios FROM usuario");
-            $sql->execute();
-            $totalUsuarios = $sql->fetch(PDO::FETCH_ASSOC)['total_usuarios'];
-
-            // Usuarios activos (asumiendo que "id_estado = 1" representa usuarios activos)
-            $sql = $con->prepare("SELECT COUNT(*) as usuarios_activos FROM usuario WHERE id_estado = 1");
-            $sql->execute();
-            $usuariosActivos = $sql->fetch(PDO::FETCH_ASSOC)['usuarios_activos'];
-
-            // Promedio de nivel de los jugadores
-            $sql = $con->prepare("SELECT AVG(id_nivel) as id_nivel FROM deta_niv");
-            $sql->execute();
-            $promedioNivel = round($sql->fetch(PDO::FETCH_ASSOC)['id_nivel'], 2);
-
-            // Jugador con el nivel más alto
-            $sql = $con->prepare ("SELECT usuario.user_name, rol.id_rol FROM usuario 
-                                  INNER JOIN rol ON usuario.id_rol = rol.id_rol 
-                                  ORDER BY rol.id_rol
-                                  ");
-            $sql->execute();
-            $topJugador = $sql->fetch(PDO::FETCH_ASSOC);
-
-            // Total de partidas jugadas
-            $sql = $con->prepare("SELECT COUNT(*) as total_partidas FROM sala");
-            $sql->execute();
-            $totalPartidas = $sql->fetch(PDO::FETCH_ASSOC)['total_partidas'];
-            
-            
-            
-            ?>
-
-
-            <div class="tarjeta">
-                <h3>👥 Total de Usuarios</h3>
-                <p><?php echo $totalUsuarios; ?></p>
-            </div>
-
-            <div class="tarjeta">
-                <h3>✅ Usuarios Activos</h3>
-                <p><?php echo $usuariosActivos; ?></p>
-            </div>
-
-            <div class="tarjeta">
-                <h3>📈 Promedio de Nivel</h3>
-                <p><?php echo $promedioNivel; ?></p>
-            </div>
-
-            <div class="tarjeta">
-                <h3>🏆 Jugador con Mayor Nivel</h3>
-                <p><?php echo htmlspecialchars($topJugador['user_name'] ?? 'N/A'); ?> - Nivel <?php echo $topJugador['nivel_actual'] ?? '0'; ?></p>
-            </div>
-
-            <div class="tarjeta">
-                <h3>🎮 Partidas Jugadas</h3>
-                <p><?php echo $totalPartidas; ?></p>
-            </div>
-
+                    foreach ($usuarios as $usuario) {
+                        echo "<tr>
+                                <td>{$usuario['user_name']}</td>
+                                <td>{$usuario['tipo_usuario']}</td>
+                                <td>{$usuario['estado']}</td>
+                                <td>{$usuario['ultima_actividad']}</td>
+                                <td>{$usuario['nivel_actual']}</td>
+                                <td>{$usuario['mundo_actual']}</td>
+                                <td>{$usuario['partidas_jugadas']}</td>
+                              </tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
         </div>
     </div>
 </body>
 </html>
-
-<style>
-/* Estilos para las estadísticas */
-.estadisticas {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    padding: 20px;
-}
-
-.tarjeta {
-    background: #fff;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    flex: 1 1 200px;
-}
-
-.tarjeta h3 {
-    margin: 0 0 10px;
-    font-size: 1.2em;
-}
-
-.tarjeta p {
-    font-size: 1.5em;
-    font-weight: bold;
-    margin: 0;
-}
-</style>

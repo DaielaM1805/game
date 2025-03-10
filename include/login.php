@@ -5,8 +5,16 @@ require '../config/database.php';
 $db = new Database();
 $con = $db->conectar(); 
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Corregimos el nombre de la variable para que coincida con el formulario
+// if ($_SERVER["REQUEST_METHOD"] == "POST") {
+//     if (isset($_POST['logout'])) {
+//         // Si se envía el logout, cerramos la sesión
+//         session_unset();
+//         session_destroy();
+//         echo json_encode(["status" => "success", "message" => "Sesión cerrada."]);
+//         exit();
+//     }
+
+    // Procesar el inicio de sesión
     $usuario = $_POST['usuario'] ?? null;
     $contra = $_POST['contra'] ?? null;
 
@@ -34,8 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Redirección según el rol del usuario
             if ($fila["id_rol"] == 1) {
                 echo json_encode(["status" => "success", "redirect" => "admin/index.php"]);
-            } 
-            elseif ($fila["id_rol"] == 2) {
+            } elseif ($fila["id_rol"] == 2) {
                 echo json_encode(["status" => "success", "redirect" => "jugador/index.php"]);
             } else {
                 echo json_encode(["status" => "error", "message" => "Rol no reconocido."]);
@@ -47,5 +54,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo json_encode(["status" => "error", "message" => "Credenciales incorrectas."]);
     }
     exit();
-}
+
 ?>

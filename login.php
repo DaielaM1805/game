@@ -23,11 +23,24 @@ require 'config/database.php';
             <div class="mb-3">
                 <label class="form-label">Contraseña</label>
                 <input type="password" name="contra" id="contra" class="form-control" required>
+
             </div>
+
+            
+
+
             <button type="submit" class="btn btn-primary w-100">Ingresar</button>
-        </form>
-        <div id="mensaje" class="mt-3 text-center"></div>
-    </div>
+              <div class="position-absolute top-0 start-0 mt-3 ms-3">
+    <a href="index.php" class="btn btn-primary">Volver</a>
+</div>
+        
+
+              <!-- Botón para recuperar contraseña -->
+              <label><a href="recovery.php" class="btn btn-outline-secondary w-100 mt-2">¿Olvidaste tu contraseña?</a></label>
+              <div id="mensaje" class="mt-3 text-center"></div>
+            </form>
+            <div id="mensaje" class="mt-3 text-center"></div>    
+        </div>
     
     <script src="js/validacionlogin.js"></script>
 </body>

@@ -70,11 +70,80 @@ if (isset($_POST['enviar'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="css/styles.css" rel="stylesheet">
     <title>Crear Usuario</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url('../img/fondo_admin.png') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            width: 350px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        input, select {
+            padding: 8px;
+            margin-top: 5px;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .back-button {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .back-button a {
+            text-decoration: none;
+            color: white;
+            background-color: #dc3545;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+
+        .back-button a:hover {
+            background-color: #c82333;
+        }
+    </style>
 </head>
 <body>
-    <h1>Crear o actualizar un usuario</h1>
+    <h1>Crear un usuario</h1>
     <form action="" method="post">
         <!-- Documento -->
         <label for="id_usuario">Documento</label>
@@ -107,7 +176,12 @@ if (isset($_POST['enviar'])) {
         </select>
 
         <!-- Botón de registro -->
-        <input type="submit" name="enviar" value="Registrar" id="enviar">
+        <input type="submit" name="enviar" value="Registrar">
+
+        <!-- Botón de volver -->
+        <div class="position-absolute top-0 start-0 mt-3 ms-3">
+    <a href="index.php" class="btn btn-primary">Volver</a>
+        </div>
     </form>
 </body>
 </html>

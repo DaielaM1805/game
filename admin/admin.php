@@ -10,9 +10,91 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Usuarios</title>
-    <link rel="stylesheet" href="../css/switch.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+         body{
+            background-image: url(../img/fondo_admin.png);
+            background-size: cover;
+            height: 100vh; 
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: collapse
+         }
+         h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+         }
+        .table {
+            font-size: 14px;
+            border-radius: 20px;
+            
+        }
+        .table-rounded {
+            border-collapse: collapse;
+            border-spacing: 0 -2px;
+        }
+        .table-rounded th, .table-rounded td {
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+        }
+        th,tr, td {
+            padding: 8px;
+            text-align: center;
+            border-collapse: collapse;
+            border: solid 3px yellow;
+        }
+
+        /* Estilos del switch */
+        .switch {
+            position: relative;
+            height: 1.5rem;
+            width: 3rem;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            border-radius: 9999px;
+            background-color: rgba(100, 116, 139, 0.377);
+            transition: all .3s ease;
+        }
+
+        .switch:checked {
+            background-color: rgb(25, 125, 240);
+        }
+
+        .switch::before {
+            position: absolute;
+            content: "";
+            left: calc(1.5rem - 1.6rem);
+            top: calc(1.5rem - 1.6rem);
+            display: block;
+            height: 1.6rem;
+            width: 1.6rem;
+            cursor: pointer;
+            border: 1px solid rgba(100, 116, 139, 0.527);
+            border-radius: 9999px;
+            background-color: rgba(255, 255, 255, 1);
+            box-shadow: 0 3px 10px rgba(100, 116, 139, 0.327);
+            transition: all .3s ease;
+        }
+
+        .switch:hover::before {
+            box-shadow: 0 0 0px 8px rgba(0, 0, 0, .15);
+        }
+
+        .switch:checked:hover::before {
+            box-shadow: 0 0 0px 8px rgba(236, 72, 153, .15);
+        }
+
+        .switch:checked:before {
+            transform: translateX(100%);
+            border-color: rgb(25, 125, 240);
+        }
+    </style>
 </head>
 <body>
    <div><br>
@@ -20,28 +102,10 @@ session_start();
        <div class="container table-responsive">
            <div>.</div>
 
-           <style>
-               .table {
-                   font-size: 14px;
-                   border-radius: 20px;
-               }
-               .table-rounded {
-                   border-collapse: collapse;
-                   border-spacing: 0 -2px;
-               }
-               .table-rounded th, .table-rounded td {
-                   border: 1px solid #dee2e6;
-                   border-radius: 10px;
-               }
-               th, td {
-                   padding: 8px;
-                   text-align: center;
-               }
-           </style>
-
            <table class="table table-light table-bordered border-secondary table-rounded">
                <thead class="table-dark">
-                   <tr>
+                   
+               <tr>
                        <th>Documento</th>
                        <th>Nombre de usuario</th>
                        <th>Correo</th>
@@ -88,7 +152,7 @@ session_start();
                                    <a href="actualizar.php?id_usuario=<?php echo $usuario['id_usuario']; ?>" 
                                       onclick="window.open(this.href, '', 'width=800, height=500'); return false;">
                                       Editar
-                                   </a>
+                                   </a>  
                                </div>
                            </td>
                            <td>
@@ -105,7 +169,10 @@ session_start();
            </table>
 
            <div class="text-center">
-               <a class="btn btn-danger" href="../include/sali.php">Cerrar Sesión</a>
+               <a class="btn btn-danger" href="../include/salir.php">Cerrar Sesión</a>
+               <div class="position-absolute top-0 start-0 mt-3 ms-3">
+                   <a href="index.php" class="btn btn-primary">Volver</a>
+               </div>
            </div><br>
        </div>
    </div>
